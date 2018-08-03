@@ -7,14 +7,18 @@ from __future__ import unicode_literals
 #from __future__ import print_function
 
 # Generic/Built-in
+
 import datetime
 import argparse
 
+########################################################################################################################
 # Other Libs
+########################################################################################################################
 import onedrivesdk
 
+########################################################################################################################
 # Owned
-
+########################################################################################################################
 
 __author__ = "Philipp Germann"
 __copyright__ = "Copyright 2017, The Nostalgic project"
@@ -25,6 +29,22 @@ __maintainer__ = "Andrei Rukavina"
 __email__ = "rukavina.andrei@gmail.com"
 __status__ = "Dev"
 
+########################################################################################################################
+# ToDos
+########################################################################################################################
+
+#todo 1 implement one time app auth
+#   todo 1.1 check if pickle session file exists
+#   todo 1.2 check if auth is ok
+
+#todo 2 read/write json/pickle object for app data
+#   todo 2.1 pack data to zip and upload to onedrive folder
+
+#todo 3 upload/download data to/from onedrive
+
+#todo 4 zip/unzip data
+
+#todo logging output
 
 
 import onedrivesdk
@@ -58,7 +78,9 @@ def onedrive_auth_own_app():
 
     client.auth_provider.authenticate(code, redirect_uri, client_secret)
 
-    onedrive_add_folder(client)
+    client.auth_provider.save_session()
+
+    #onedrive_add_folder(client)
 
     # returned_item = client.item(drive='me', id='root').children['newfile.txt'].upload('./path_to_file.txt')
 
@@ -80,5 +102,5 @@ def onedrive_example_auth():
 
 
 if __name__ == "__main__":
-    main_test()
+    onedrive_auth_own_app()
 
