@@ -34,18 +34,22 @@ import os
 
 input = getattr(__builtins__, 'raw_input', input)
 
-def main():
 
-    #client = onedrivesdk.get_default_client(client_id='c8e4b648-3fc8-4948-8c59-0b14d8972582',
-    #                                        scopes=['Files.ReadWrite.All	'])
-    #auth_url = client.auth_provider.get_auth_url(redirect_uri)
+def onedrive_add_folder(client):
+    f = onedrivesdk.Folder()
+    i = onedrivesdk.Item()
+    i.name = 'New Folder'
+    i.folder = f
+    returned_item = client.item(drive='me', id='root').children.add(i)
 
+def onedrive_auth_own_app():
     redirect_uri = 'http://localhost:5000/login/authorized'
-    client_secret = 'twWW+gjygKAXGB43744|*('
+    client_secret = 'bnQV76$%^inqsaDBRKG479#'
     scopes = ['wl.signin', 'wl.offline_access', 'onedrive.readwrite']
 
     client = onedrivesdk.get_default_client(
-        client_id='c8e4b648-3fc8-4948-8c59-0b14d8972582', scopes=scopes)
+        client_id='c8e4b648-3fc8-4948-8c59-0b14d8972582',
+        scopes=scopes)
 
     auth_url = client.auth_provider.get_auth_url(redirect_uri)
 
@@ -54,9 +58,11 @@ def main():
 
     client.auth_provider.authenticate(code, redirect_uri, client_secret)
 
-    #returned_item = client.item(drive='me', id='root').children['newfile.txt'].upload('./path_to_file.txt')
+    onedrive_add_folder(client)
 
-def onedrive_test():
+    # returned_item = client.item(drive='me', id='root').children['newfile.txt'].upload('./path_to_file.txt')
+
+def onedrive_example_auth():
     redirect_uri = "http://localhost:8080/"
     client_secret = "BqaTYqI0XI7wDKcnJ5i3MvLwGcVsaMVM"
 
@@ -71,5 +77,8 @@ def onedrive_test():
     # Finally, authenticate!
     client.auth_provider.authenticate(code, redirect_uri, client_secret)
 
+
+
 if __name__ == "__main__":
-    main()
+    main_test()
+
