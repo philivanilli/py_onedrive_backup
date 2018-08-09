@@ -1,30 +1,29 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding: utf-8
+"""
+    ToolBox.ToolBoxMain
+    ~~~~~~~~~~~~~~~~~~~~~~~
 
-# Generic/Built-in
+    Release date:    __GIT_HEAD_DATE__
+    Release version: __GIT_HEAD_REVISION__
 
-import datetime
-import argparse
-import os
 
-###
-# Other Libs
-###
-import onedrivesdk
+"""
 
-from onedrivesdk.helpers import GetAuthCodeServer
-
-###
-# Owned
-###
 __author__ = "Philipp Germann"
-__copyright__ = "Copyright 2017, The Nostalgic project"
+__email__ = "-"
+__version__ = "__GIT_AUTO_REVISION__"
+__date__ = "__GIT_AUTO_DATE__"
+__copyright__ = "Copyright 2017-2018, The Nostalgic project"
+__maintainer__ = "Philipp Germann"
 __credits__ = ["Philipp Germann"]
 __license__ = "MPL 2.0"
-__version__ = "0.1.0"
-__maintainer__ = "Philipp Germann"
-__email__ = "-"
 __status__ = "Dev"
+
+import os
+import onedrivesdk
+from onedrivesdk.helpers import GetAuthCodeServer
+from lib import config, logger
 
 ###
 # ToDos
@@ -43,7 +42,7 @@ __status__ = "Dev"
 
 #todo logging output
 
-input = getattr(__builtins__, 'raw_input', input)
+
 
 def onedrive_add_folder(client):
     f = onedrivesdk.Folder()
@@ -127,12 +126,35 @@ def onedrive_example_auth():
 #     auth_provider.refresh_token()
 #     client = onedrivesdk.OneDriveClient(base_url, auth_provider, http_provider)
 
-
 if __name__ == "__main__":
-    # if os.path.isfile("session.pickle"):
-    #    onedrive_load_session()
-    #    onedrive_add_folder
+    # switch execution path
+    os.chdir(os.path.dirname(__file__))
 
-    client = onedrive_auth_own_app_cli()
+    # setup application logging
+    logger.setup(logtofile=True)
+    logger.info("Starting onedrive backup application")
 
-    onedrive_add_folder(client)
+    # load configurations
+    config.set_global_config(config.JSONConfig("config.json"))
+
+    #config.get_global().set("myconfig/test", "test")
+    #config.get_global().set("myconfig/version", 12)
+    #config.get_global().set("hello", "abc")
+
+    print("myconfig/test: %s" % str(config.get_global().get("myconfig/test", "test")))
+    print("hello: %s" % str(config.get_global().get("hello", None)))
+    print("abc: %s" % str(config.get_global().get("abc", 2)))
+
+    config.get_global().save()
+
+
+    if os.path.isfile("session.pickle"):
+        logger.info("Session file found")
+
+        # onedrive_add_folder(client)
+         #    onedrive_load_session()
+    else:
+        logger.info("No session file found. Get auth token")
+
+        client = onedrive_auth_own_app_cli()
+        client.auth_provider.save_session(path="session.pickle")
